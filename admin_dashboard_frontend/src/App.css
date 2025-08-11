@@ -11,6 +11,11 @@
   --emoji-card-border: #333;
 }
 
+/* =========== GLOBAL BOX-SIZING & LAYOUT SPACING =========== */
+html, body, #root, *, *::before, *::after {
+  box-sizing: content-box !important;
+}
+
 body,
 .netflix-root {
   background: var(--bg-primary);
@@ -21,10 +26,8 @@ body,
   height: 100vh;
   margin: 0;
   font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
-  box-sizing: border-box;
   overscroll-behavior: none;
   position: relative;
-  /* Removes scrolls leaks for viewport mode */
   max-width: 100vw;
   max-height: 100vh;
 }
@@ -131,10 +134,12 @@ body,
   transition: margin-left 0.3s cubic-bezier(0.7,0,0.2,1);
   display: flex;
   flex-direction: column;
+  box-sizing: content-box;
 }
 @media (max-width: 980px) {
   .main-content {
     margin-left: 0;
+    box-sizing: content-box;
   }
 }
 
@@ -186,10 +191,11 @@ body,
 .analytics-section-group {
   width: 100vw;
   max-width: 1200px;
-  margin: 0 auto 0 auto;
-  padding: 0;
+  margin: 22px auto 0 auto;
+  padding: 0 8px 8px 8px;
   display: flex;
   flex-direction: column;
+  box-sizing: content-box;
 }
 
 .analytics-widget-area {
@@ -205,6 +211,7 @@ body,
   margin: 0 auto;
   padding: 0 0 18px 0;
   overflow-x: hidden;
+  box-sizing: content-box;
 }
 
 .analytics-widget-row {
@@ -214,29 +221,55 @@ body,
   margin: 0 auto;
   display: flex;
   flex-direction: row;
-  gap: 2.5vw;
+  gap: 2vw;
   justify-content: flex-start;
   align-items: stretch;
-  padding: 12px 3vw 4px 2vw;
+  padding: 13px 2vw 8px 2vw;
   min-height: 142px;
   max-height: 38vh;
-  box-sizing: border-box;
+  box-sizing: content-box;
 }
 
 @media (max-width: 1180px) {
   .analytics-widget-row { padding-left: 1vw; padding-right: 1.5vw; }
 }
 @media (max-width: 900px) {
+  .emoji-section {
+    margin-top: 8vw;
+    max-width: 99vw;
+    width: 99vw;
+    min-width: 0;
+    padding: 0 1vw 1vw 1vw;
+    box-sizing: content-box;
+  }
   .analytics-widget-row {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     max-height: none;
     min-height: 1px;
     width: 99vw;
-    padding: 6vw 0 0 0;
+    padding: 5vw 0 0 0;
+    box-sizing: content-box;
   }
   .analytics-widget-area {
-    padding: 0 2vw 16vw 2vw;
+    padding: 0 1vw 10vw 1vw;
+    box-sizing: content-box;
+  }
+  .emoji-container-wrapped {
+    gap: 10px 7px;
+    padding: 3vw 1vw 2.2vw 1vw;
+    min-height: 90px;
+    max-width: 97vw;
+    font-size: 0.98em;
+    box-sizing: content-box;
+  }
+  .emoji-card {
+    padding: 11px 5px 7px 5px;
+    min-width: 56px;
+    min-height: 75px;
+    max-width: 109px;
+    margin-bottom: 7px;
+    box-sizing: content-box;
   }
 }
 
@@ -249,33 +282,37 @@ body,
   flex: 1 1 0;
   min-width: 180px;
   max-width: 520px;
-  margin-bottom: 0;
-  padding: 0 0 0 0;
+  margin-bottom: 18px;
+  margin-top: 2px;
+  padding: 0;
   overflow: hidden;
   min-height: 134px;
   display: flex;
   flex-direction: column;
+  box-sizing: content-box;
 }
 .chart-card {
   max-width: 370px;
-  min-width: 180px;
+  min-width: 186px;
   min-height: 134px;
-  flex: 1 1 240px;
-  margin-right: 0;
-  margin-left: 0;
+  flex: 1 1 254px;
+  margin: 0 0 0 0;
   display: flex;
   flex-direction: column;
   justify-content: stretch;
+  box-sizing: content-box;
 }
 
 .stats-card {
   flex: 2 1 320px;
-  min-width: 180px;
+  min-width: 185px;
   max-width: 470px;
   margin-right: 0;
+  margin-left: 13px;
   display: flex;
   flex-direction: column;
   justify-content: stretch;
+  box-sizing: content-box;
 }
 
 @media (max-width: 900px) {
@@ -290,21 +327,22 @@ body,
 
 /* === Analytics Widget modular block content spacing === */
 .analytics-card-header {
-  padding: 15px 18px 7px 17px;
+  padding: 13px 16px 6px 16px;
   color: var(--text-primary);
-  font-size: 1.22rem;
+  font-size: 1.19rem;
   font-weight: 800;
   letter-spacing: .05em;
   text-shadow: 0 2px 9px #ff282820;
   background: none;
   border-bottom: 1px solid #22171e21;
   margin-bottom: 0;
-  line-height: 1.18;
-  min-height: 33px;
+  line-height: 1.17;
+  min-height: 28px;
+  box-sizing: content-box;
 }
 
 .analytics-card-body {
-  padding: 3px 14px 11px 14px;
+  padding: 4px 12px 9px 12px;
   background: none;
   flex: 1 1 auto;
   display: flex;
@@ -312,8 +350,8 @@ body,
   justify-content: flex-start;
   align-items: stretch;
   min-width: 0;
-  min-height: 60px;
-  box-sizing: border-box;
+  min-height: 54px;
+  box-sizing: content-box;
 }
 
 .analytics-label-row {
@@ -388,10 +426,11 @@ html, body {
   height: 72px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
-  padding: 0 32px 0 18px;
+  padding: 0 28px 0 18px;
   z-index: 10;
   position: sticky;
   top: 0;
+  box-sizing: content-box;
 }
 .menu-btn {
   background: none;
@@ -455,25 +494,30 @@ html, body {
 
 /* Emoji List Section */
 .emoji-section {
-  /* Increased max-width for a more spacious horizontal emoji row (Netflix-style) */
-  max-width: 1050px;
-  width: 92vw;
-  min-width: 340px;
-  margin: 48px auto 0 auto;
+  max-width: 1060px;
+  width: 95vw;
+  min-width: 330px;
+  margin: 38px auto 0 auto;
+  padding: 12px 12px 6px 12px;
   background: transparent;
   position: relative;
+  box-sizing: content-box;
 }
 .emoji-list-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 11px;
+  padding-right: 3px;
+  padding-left: 0px;
+  box-sizing: content-box;
 }
 .emoji-list-title h2 {
   color: var(--text-primary);
-  font-size: 1.45rem;
+  font-size: 1.41rem;
   font-weight: 800;
-  margin: 0;
+  margin: 0 0 0 2px;
+  padding: 0;
 }
 .emoji-count {
   color: var(--text-secondary);
@@ -482,6 +526,9 @@ html, body {
   background: #25040459;
   border-radius: 8px;
   padding: 4px 13px;
+  margin-left: 14px;
+  margin-right: 0;
+  box-sizing: content-box;
 }
 
 /* == EMOJI GRID ENHANCED RESPONSIVENESS == */
@@ -494,18 +541,19 @@ html, body {
 .emoji-container-wrapped {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px 22px;
-  min-height: 154px;
-  margin-top: 18px;
+  gap: 16px 19px;
+  min-height: 135px;
+  margin-top: 10px;
   padding: 12px 18px 18px 18px;
   width: 100%;
-  max-width: 1080px;
-  box-shadow: 0 8px 38px 0 rgba(18,0,0,0.03), 0 1.5px 8px #e5091408;
+  max-width: 1083px;
+  box-shadow: 0 8px 32px 0 rgba(18,0,0,0.03), 0 1.5px 8px #e5091408;
   border-radius: 18px;
   background: rgba(34,31,31,0.24);
   align-items: flex-start;
   justify-content: flex-start;
   min-width: 0;
+  box-sizing: content-box;
   /* Responsive grid look but using flex for full browser compatibility */
 }
 
@@ -537,25 +585,26 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 20px 0 13px 0;
+  padding: 16px 8px 10px 8px;
   position: relative;
   transition: 
     border .17s cubic-bezier(0.33,1,0.68,1),
     box-shadow .20s cubic-bezier(0.33,1,0.68,1),
     background 0.18s,
     transform .15s;
-  box-shadow: 0 2px 16px 0 rgba(18,0,0,0.07);
+  box-shadow: 0 2px 15px 0 rgba(18,0,0,0.05);
   cursor: pointer;
   will-change: transform;
   outline: none;
-  min-height: 138px;
+  min-height: 112px;
   min-width: 88px;
-  max-width: 170px;
-  margin-right: 6px;
-  margin-bottom: 0;
+  max-width: 160px;
+  margin-right: 7px;
+  margin-bottom: 12px;
   touch-action: manipulation;
   scroll-snap-align: start;
   flex: 0 0 auto;
+  box-sizing: content-box;
 }
 .emoji-card:hover,
 .emoji-card:focus,
@@ -702,16 +751,18 @@ html, body {
   background: var(--bg-secondary);
   border-radius: 14px;
   box-shadow: 0 12px 40px 0 rgba(0,0,0,0.33);
-  padding: 38px 30px 28px 30px;
+  padding: 33px 24px 20px 24px;
   min-width: 320px;
   position: relative;
   max-width: 98vw;
+  box-sizing: content-box;
 }
 @media (max-width: 520px) {
   .netflix-modal {
-    padding: 30px 12px 20px 12px;
+    padding: 21px 8px 16px 8px;
     min-width: 0;
-    width: 97vw;
+    width: 98vw;
+    box-sizing: content-box;
   }
 }
 .modal-close {
@@ -736,7 +787,8 @@ html, body {
   line-height: 1.15;
 }
 .form-group {
-  margin-bottom: 17px;
+  margin-bottom: 15px;
+  box-sizing: content-box;
 }
 .form-group label {
   color: var(--text-primary);
@@ -746,6 +798,7 @@ html, body {
   font-weight: 700;
   gap: 5px;
   letter-spacing: 0.04em;
+  box-sizing: content-box;
 }
 .form-group input, .form-group select {
   margin-top: 4px;
@@ -754,10 +807,11 @@ html, body {
   color: var(--text-primary);
   border: 1.2px solid var(--border-color);
   border-radius: 7px;
-  padding-left: 7px;
   font-size: 1.02rem;
   transition: border .13s, box-shadow .13s;
   min-height: 35px;
+  padding: 6px 7px;
+  box-sizing: content-box;
 }
 .form-group input:focus, .form-group select:focus {
   border-color: var(--text-secondary);
