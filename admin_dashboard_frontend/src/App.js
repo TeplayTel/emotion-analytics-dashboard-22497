@@ -182,7 +182,7 @@ function App() {
               <h2>Your Emoji Set</h2>
               <span className="emoji-count">{emojiList.length} total</span>
             </div>
-            <div className="emoji-container">
+            <div className="emoji-container-wrapped">
               {emojiList.map(e => (
                 <div className="emoji-card"
                      key={e.id}
@@ -192,8 +192,8 @@ function App() {
                        boxShadow: "0 4px 16px 0 rgba(229,9,20,.06)",
                        outline: 'none'
                      }}
-                     onFocus={e=>e.currentTarget.classList.add('focus')}
-                     onBlur={e=>e.currentTarget.classList.remove('focus')}
+                     onFocus={evt=>evt.currentTarget.classList.add('focus')}
+                     onBlur={evt=>evt.currentTarget.classList.remove('focus')}
                 >
                   <div className="emoji-symbol"
                     tabIndex={-1}
@@ -236,9 +236,10 @@ function App() {
               )}
             </div>
           </section>
-          {/* Modular analytics grid – ready for real data integration */}
-          {/* AnalyticsWidgetGrid will pull data from API in future (see AnalyticsWidgets.js) */}
-          <AnalyticsWidgetGrid />
+          {/* All analytics widgets and stats/cards strictly grouped below or beside emoji grid */}
+          <div className="analytics-section-group">
+            <AnalyticsWidgetGrid />
+          </div>
         </div>
       </div>
 
