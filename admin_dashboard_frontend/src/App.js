@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// Dummy initial emoji data
+/** 
+ * Default emoji data, now with metadata.
+ */
 const DEFAULT_EMOJIS = [
-  { id: 1, symbol: '😂', name: 'Joy' },
-  { id: 2, symbol: '😢', name: 'Sadness' },
-  { id: 3, symbol: '😲', name: 'Surprise' },
-  { id: 4, symbol: '😡', name: 'Anger' },
-  { id: 5, symbol: '😍', name: 'Love' },
-  { id: 6, symbol: '😱', name: 'Fear' }
+  { id: 1, symbol: '😂', name: 'Joy', description: 'Expresses laughter and happiness', category: 'Positive' },
+  { id: 2, symbol: '😢', name: 'Sadness', description: 'Signifies crying and sadness', category: 'Negative' },
+  { id: 3, symbol: '😲', name: 'Surprise', description: 'Shows astonishment or shock', category: 'Neutral' },
+  { id: 4, symbol: '😡', name: 'Anger', description: 'Represents annoyance or anger', category: 'Negative' },
+  { id: 5, symbol: '😍', name: 'Love', description: 'Shows love or adoration', category: 'Positive' },
+  { id: 6, symbol: '😱', name: 'Fear', description: 'Indicates fear or panic', category: 'Negative' }
 ];
 
 // Netflix-like dark theme colors (override App.css below)
@@ -29,8 +31,14 @@ function App() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [emojiToDelete, setEmojiToDelete] = useState(null);
-  const [addEmoji, setAddEmoji] = useState({ symbol: '', name: '' });
+  // Add emoji supports symbol, name, description, category
+  const [addEmoji, setAddEmoji] = useState({ symbol: '', name: '', description: '', category: '' });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Helper: Emoji category options
+  const CATEGORY_OPTIONS = [
+    'Positive', 'Negative', 'Neutral', 'Surprise', 'Love', 'Other'
+  ];
 
   // Apply Netflix theme via CSS vars
   useEffect(() => {
@@ -75,6 +83,7 @@ function App() {
     if (
       !addEmoji.symbol.trim() ||
       !addEmoji.name.trim() ||
+      !addEmoji.category.trim() ||
       emojiList.some(e => e.symbol === addEmoji.symbol)
     ) return;
     setEmojiList([
@@ -82,7 +91,9 @@ function App() {
       {
         id: Date.now(),
         symbol: addEmoji.symbol,
-        name: addEmoji.name
+        name: addEmoji.name,
+        description: addEmoji.description,
+        category: addEmoji.category
       }
     ]);
     handleCloseAddModal();
@@ -147,9 +158,46 @@ function App() {
           </div>
           <div className="emoji-container">
             {emojiList.map(e => (
-              <div className="emoji-card" key={e.id}>
-                <div className="emoji-symbol">{e.symbol}</div>
+              <div className="emoji-card"
+                   key={e.id}
+                   tabIndex={0}
+                   title={e.description || ''}
+                   style={{
+                     boxShadow: "0 4px 16px 0 rgba(229,9,20,.06)",
+                     outline: 'none'
+                   }}
+                   onFocus={e=>e.currentTarget.classList.add('focus')}
+                   onBlur={e=>e.currentTarget.classList.remove('focus')}
+              >
+                <div className="emoji-symbol"
+                  tabIndex={-1}
+                  aria-label={e.description || e.name}
+                >
+                  {e.symbol}
+                </div>
                 <span className="emoji-name">{e.name}</span>
+                <span className="emoji-category" style={{
+                  fontSize: '0.98em',
+                  color: 'var(--text-secondary)',
+                  opacity: 0.88,
+                  fontWeight: 500,
+                  marginBottom: "3px",
+                  background: "#22000021",
+                  borderRadius: 6,
+                  padding: "1px 7px",
+                  letterSpacing: 0.1
+                }}>{e.category}</span>
+                {e.description && (
+                  <span className="emoji-desc"
+                    style={{
+                      fontSize: '0.95em',
+                      color: '#fff7',
+                      margin: "2px 0 0 0",
+                      lineHeight: 1.1,
+                      textAlign: "center"
+                    }}
+                  >{e.description}</span>
+                )}
                 <button className="emoji-delete-btn"
                   onClick={() => handleOpenDeleteModal(e)}
                   aria-label={`Delete emoji ${e.name}`}>
@@ -167,8 +215,13 @@ function App() {
       {/* Add Emoji Modal */}
       {showAddModal && (
         <Modal onClose={handleCloseAddModal}>
-          <form className="modal-form" onSubmit={handleAddEmoji}>
-            <h3>Add New Emoji</h3>
+          <form className="modal-form" onSubmit={handleAddEmoji} autoComplete="off">
+            <h3 style={{display:"flex",alignItems:"center",gap:7}}>
+              <span style={{
+                fontSize: "1.5em",
+                textShadow: "0 2px 6px #901d22"
+              }}>✨</span> Add New Emoji
+            </h3>
             <div className="form-group">
               <label>
                 Emoji Symbol:
@@ -179,11 +232,20 @@ function App() {
                   maxLength={2}
                   required
                   placeholder="😎"
+                  autoFocus
                   onChange={e => setAddEmoji(prev => ({
                     ...prev,
-                    symbol: e.target.value.slice(0, 2)
+                    symbol: e.target.value.replace(/[^\p{Emoji}\p{Symbol}]/gu, '').slice(0, 2)
                   }))}
-                  style={{ fontSize: '2rem', width: 48, textAlign: 'center' }}
+                  style={{
+                    fontSize: '2rem',
+                    width: 54,
+                    height: 42,
+                    textAlign: 'center',
+                    border: "1.2px solid var(--border-color)",
+                    borderRadius: 10,
+                    marginTop: 3
+                  }}
                 />
               </label>
             </div>
@@ -195,20 +257,87 @@ function App() {
                   value={addEmoji.name}
                   required
                   placeholder="Ex: Excited"
+                  autoComplete="off"
                   onChange={e => setAddEmoji(prev => ({
                     ...prev,
                     name: e.target.value
                   }))}
-                  style={{ width: 150 }}
+                  style={{
+                    width: 190,
+                    border: "1.2px solid var(--border-color)",
+                    borderRadius: 9,
+                    minHeight: 35
+                  }}
                 />
               </label>
             </div>
-            <div className="modal-actions">
-              <button type="submit" className="primary-btn">Add Emoji</button>
-              <button type="button" className="secondary-btn" onClick={handleCloseAddModal}>Cancel</button>
+            <div className="form-group">
+              <label>
+                Description:
+                <input
+                  type="text"
+                  value={addEmoji.description}
+                  placeholder="Optional (ex: Laughter or happy tears)"
+                  onChange={e => setAddEmoji(prev => ({
+                    ...prev,
+                    description: e.target.value
+                  }))}
+                  style={{
+                    width: 230,
+                    border: "1.2px solid var(--border-color)",
+                    borderRadius: 8,
+                    minHeight: 34
+                  }}
+                />
+              </label>
             </div>
-            <div className="modal-footnote">
-              Duplicate emojis are not allowed.
+            <div className="form-group">
+              <label>
+                Category:
+                <select
+                  value={addEmoji.category}
+                  required
+                  onChange={e => setAddEmoji(prev => ({
+                    ...prev,
+                    category: e.target.value
+                  }))}
+                  style={{
+                    width: "70%",
+                    minWidth: 120,
+                    border: "1.2px solid var(--border-color)",
+                    borderRadius: 8,
+                    minHeight: 33,
+                    color: addEmoji.category ? 'inherit' : "var(--text-secondary)",
+                    background: addEmoji.category ? 'inherit' : "#000"
+                  }}
+                >
+                  <option value="" disabled>
+                    Select category...
+                  </option>
+                  {CATEGORY_OPTIONS.map(opt => (
+                    <option value={opt} key={opt}>{opt}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="modal-actions">
+              <button
+                type="submit"
+                className="primary-btn"
+                style={{
+                  boxShadow:"0 2px 10px #e509140c",
+                  letterSpacing:1.1
+                }}
+              >
+                Add Emoji
+              </button>
+              <button type="button" className="secondary-btn" onClick={handleCloseAddModal}>
+                Cancel
+              </button>
+            </div>
+            <div className="modal-footnote" style={{textAlign:"left"}}>
+              <span style={{color:"var(--text-secondary)", fontWeight:600, marginRight:4}}>Tips: </span>
+              Duplicate emoji symbols are not allowed. Try one or two Unicode emoji per symbol. 
             </div>
           </form>
         </Modal>
