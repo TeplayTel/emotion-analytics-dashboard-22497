@@ -24,6 +24,30 @@ const NETFLIX_THEME = {
   '--button-text': '#fff'
 };
 
+/**
+ * Simple area/line chart mock component using SVG and demo data.
+ */
+function MiniChart({ points = [7, 4, 9, 5, 13, 12, 11], color="#e50914", fill="#e5091433", height=60 }) {
+  // Responsive SVG width based on points length
+  const width = 120;
+  const domainY = [0, Math.max(...points, 1)];
+  const h = height;
+  const step = width / (points.length - 1);
+  // Scale Y
+  const valueToY = v => h - ((v - domainY[0]) / (domainY[1] - domainY[0]) * h);
+  // Points as string for SVG polyline
+  const pointStr = points.map((v, i) => `${i * step},${valueToY(v)}`).join(" ");
+  // Area for filled shape
+  const areaStr = `${points.map((v, i) => `${i*step},${valueToY(v)}`).join(" ")} ${width},${h} 0,${h}`;
+  return (
+    <svg width={width} height={h} viewBox={`0 0 ${width} ${h}`} style={{display:"block"}}>
+      <polyline fill={fill} stroke="none" points={areaStr} />
+      <polyline fill="none" stroke={color} strokeWidth="3" points={pointStr} />
+      <circle r={4} fill={color} cx={width} cy={valueToY(points[points.length-1])} />
+    </svg>
+  );
+}
+
 // PUBLIC_INTERFACE
 function App() {
   const [theme, setTheme] = useState('netflix-dark');
@@ -132,7 +156,7 @@ function App() {
         onClick={handleSidebarToggle} />
 
       {/* Main Section */}
-      <div className="main-content">
+      <div className="main-content netflix-analytics-main">
         <header className="netflix-header">
           <button className="menu-btn" onClick={handleSidebarToggle} aria-label="Toggle sidebar">
             <span />
@@ -151,77 +175,82 @@ function App() {
           </div>
         </header>
 
-        <section className="emoji-section">
-          <div className="emoji-list-title">
-            <h2>Your Emoji Set</h2>
-            <span className="emoji-count">{emojiList.length} total</span>
-          </div>
-          <div className="emoji-container">
-            {emojiList.map(e => (
-              <div className="emoji-card"
-                   key={e.id}
-                   tabIndex={0}
-                   title={e.description || ''}
-                   style={{
-                     boxShadow: "0 4px 16px 0 rgba(229,9,20,.06)",
-                     outline: 'none'
-                   }}
-                   onFocus={e=>e.currentTarget.classList.add('focus')}
-                   onBlur={e=>e.currentTarget.classList.remove('focus')}
-              >
-                <div className="emoji-symbol"
-                  tabIndex={-1}
-                  aria-label={e.description || e.name}
+        <div className="analytics-grid-area">
+          <section className="emoji-section analytics-emoji-row">
+            <div className="emoji-list-title">
+              <h2>Your Emoji Set</h2>
+              <span className="emoji-count">{emojiList.length} total</span>
+            </div>
+            <div className="emoji-container">
+              {emojiList.map(e => (
+                <div className="emoji-card"
+                     key={e.id}
+                     tabIndex={0}
+                     title={e.description || ''}
+                     style={{
+                       boxShadow: "0 4px 16px 0 rgba(229,9,20,.06)",
+                       outline: 'none'
+                     }}
+                     onFocus={e=>e.currentTarget.classList.add('focus')}
+                     onBlur={e=>e.currentTarget.classList.remove('focus')}
                 >
-                  {e.symbol}
+                  <div className="emoji-symbol"
+                    tabIndex={-1}
+                    aria-label={e.description || e.name}
+                  >
+                    {e.symbol}
+                  </div>
+                  <span className="emoji-name">{e.name}</span>
+                  <span className="emoji-category" style={{
+                    fontSize: '0.98em',
+                    color: 'var(--text-secondary)',
+                    opacity: 0.88,
+                    fontWeight: 500,
+                    marginBottom: "3px",
+                    background: "#22000021",
+                    borderRadius: 6,
+                    padding: "1px 7px",
+                    letterSpacing: 0.1
+                  }}>{e.category}</span>
+                  {e.description && (
+                    <span className="emoji-desc"
+                      style={{
+                        fontSize: '0.95em',
+                        color: '#fff7',
+                        margin: "2px 0 0 0",
+                        lineHeight: 1.1,
+                        textAlign: "center"
+                      }}
+                    >{e.description}</span>
+                  )}
+                  <button className="emoji-delete-btn"
+                    onClick={() => handleOpenDeleteModal(e)}
+                    aria-label={`Delete emoji ${e.name}`}>
+                    <span className="delete-x">×</span>
+                  </button>
                 </div>
-                <span className="emoji-name">{e.name}</span>
-                <span className="emoji-category" style={{
-                  fontSize: '0.98em',
-                  color: 'var(--text-secondary)',
-                  opacity: 0.88,
-                  fontWeight: 500,
-                  marginBottom: "3px",
-                  background: "#22000021",
-                  borderRadius: 6,
-                  padding: "1px 7px",
-                  letterSpacing: 0.1
-                }}>{e.category}</span>
-                {e.description && (
-                  <span className="emoji-desc"
-                    style={{
-                      fontSize: '0.95em',
-                      color: '#fff7',
-                      margin: "2px 0 0 0",
-                      lineHeight: 1.1,
-                      textAlign: "center"
-                    }}
-                  >{e.description}</span>
-                )}
-                <button className="emoji-delete-btn"
-                  onClick={() => handleOpenDeleteModal(e)}
-                  aria-label={`Delete emoji ${e.name}`}>
-                  <span className="delete-x">×</span>
-                </button>
-              </div>
-            ))}
-            {emojiList.length === 0 && (
-              <div className="emoji-empty">No emojis yet. Click "Add Emoji" to start!</div>
-            )}
-          </div>
-        </section>
+              ))}
+              {emojiList.length === 0 && (
+                <div className="emoji-empty">No emojis yet. Click "Add Emoji" to start!</div>
+              )}
+            </div>
+          </section>
+          <AnalyticsWidgetGrid />
+        </div>
       </div>
 
       {/* Add Emoji Modal */}
       {showAddModal && (
         <Modal onClose={handleCloseAddModal}>
           <form className="modal-form" onSubmit={handleAddEmoji} autoComplete="off">
+            {/* form content unchanged */}
             <h3 style={{display:"flex",alignItems:"center",gap:7}}>
               <span style={{
                 fontSize: "1.5em",
                 textShadow: "0 2px 6px #901d22"
               }}>✨</span> Add New Emoji
             </h3>
+            {/* rest of modal code unchanged */}
             <div className="form-group">
               <label>
                 Emoji Symbol:
@@ -373,6 +402,58 @@ function App() {
         </Modal>
       )}
     </div>
+  );
+}
+
+// Analytics widgets section using demo data only
+function AnalyticsWidgetGrid() {
+  // Mock demo stats for demo/placeholder UI (can adjust as preferred)
+  const emojiUsageCounts = [
+    { icon: "😂", label: "Joy", value: 1287 },
+    { icon: "😍", label: "Love", value: 964 },
+    { icon: "😢", label: "Sadness", value: 412 },
+    { icon: "😱", label: "Fear", value: 301 }
+  ];
+  // Demo trending usage
+  const chartPoints = [7, 10, 5, 17, 13, 12, 17, 10, 20, 16, 23, 19];
+  return (
+    <section className="analytics-widget-area">
+      <div className="analytics-widget-row">
+        <div className="analytics-card chart-card">
+          <div className="analytics-card-header">
+            <span role="img" aria-label="trending" style={{fontSize:22,marginRight:8}}>📈</span>
+            Weekly Emoji Reaction Trend
+          </div>
+          <div className="analytics-card-body">
+            <MiniChart points={chartPoints} color="#e50914" fill="#e5091427" />
+            <div className="analytics-label-row">
+              <span style={{fontSize:10,color:"#e50914",fontWeight:600}}>Sun</span>
+              <span style={{fontSize:10}}>Mon</span>
+              <span style={{fontSize:10}}>Tue</span>
+              <span style={{fontSize:10}}>Wed</span>
+              <span style={{fontSize:10}}>Thu</span>
+              <span style={{fontSize:10}}>Fri</span>
+              <span style={{fontSize:10}}>Sat</span>
+            </div>
+          </div>
+        </div>
+        <div className="analytics-card stats-card">
+          <div className="analytics-card-header">
+            <span role="img" aria-label="global" style={{fontSize:18,marginRight:6}}>🌎</span>
+            Global Emotions
+          </div>
+          <div className="analytics-card-body analytics-stats-flex">
+            {emojiUsageCounts.map(e=>(
+              <div className="analytics-stat" key={e.label}>
+                <span className="analytics-stat-icon" style={{fontSize:"1.7em"}}>{e.icon}</span>
+                <div className="analytics-stat-value" style={{color:"#fff"}}>{e.value}</div>
+                <div className="analytics-stat-label">{e.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
