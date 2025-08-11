@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { AnalyticsWidgetGrid } from './AnalyticsWidgets';
 
 /** 
  * Default emoji data, now with metadata.
@@ -235,6 +236,8 @@ function App() {
               )}
             </div>
           </section>
+          {/* Modular analytics grid – ready for real data integration */}
+          {/* AnalyticsWidgetGrid will pull data from API in future (see AnalyticsWidgets.js) */}
           <AnalyticsWidgetGrid />
         </div>
       </div>
@@ -402,58 +405,6 @@ function App() {
         </Modal>
       )}
     </div>
-  );
-}
-
-// Analytics widgets section using demo data only
-function AnalyticsWidgetGrid() {
-  // Mock demo stats for demo/placeholder UI (can adjust as preferred)
-  const emojiUsageCounts = [
-    { icon: "😂", label: "Joy", value: 1287 },
-    { icon: "😍", label: "Love", value: 964 },
-    { icon: "😢", label: "Sadness", value: 412 },
-    { icon: "😱", label: "Fear", value: 301 }
-  ];
-  // Demo trending usage
-  const chartPoints = [7, 10, 5, 17, 13, 12, 17, 10, 20, 16, 23, 19];
-  return (
-    <section className="analytics-widget-area">
-      <div className="analytics-widget-row">
-        <div className="analytics-card chart-card">
-          <div className="analytics-card-header">
-            <span role="img" aria-label="trending" style={{fontSize:22,marginRight:8}}>📈</span>
-            Weekly Emoji Reaction Trend
-          </div>
-          <div className="analytics-card-body">
-            <MiniChart points={chartPoints} color="#e50914" fill="#e5091427" />
-            <div className="analytics-label-row">
-              <span style={{fontSize:10,color:"#e50914",fontWeight:600}}>Sun</span>
-              <span style={{fontSize:10}}>Mon</span>
-              <span style={{fontSize:10}}>Tue</span>
-              <span style={{fontSize:10}}>Wed</span>
-              <span style={{fontSize:10}}>Thu</span>
-              <span style={{fontSize:10}}>Fri</span>
-              <span style={{fontSize:10}}>Sat</span>
-            </div>
-          </div>
-        </div>
-        <div className="analytics-card stats-card">
-          <div className="analytics-card-header">
-            <span role="img" aria-label="global" style={{fontSize:18,marginRight:6}}>🌎</span>
-            Global Emotions
-          </div>
-          <div className="analytics-card-body analytics-stats-flex">
-            {emojiUsageCounts.map(e=>(
-              <div className="analytics-stat" key={e.label}>
-                <span className="analytics-stat-icon" style={{fontSize:"1.7em"}}>{e.icon}</span>
-                <div className="analytics-stat-value" style={{color:"#fff"}}>{e.value}</div>
-                <div className="analytics-stat-label">{e.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
   );
 }
 
