@@ -1,104 +1,450 @@
-/* CSS Variables for Theme Management */
 :root {
-  /* Light theme colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text-primary: #282c34;
-  --text-secondary: #61dafb;
-  --border-color: #e9ecef;
-  --button-bg: #007bff;
-  --button-text: #ffffff;
+  /* Netflix-inspired dark palette (will be overridden inline) */
+  --bg-primary: #141414;
+  --bg-secondary: #221f1f;
+  --text-primary: #fff;
+  --text-secondary: #e50914;
+  --border-color: #333;
+  --button-bg: #e50914;
+  --button-text: #fff;
+  --emoji-card-bg: #181818;
+  --emoji-card-border: #333;
 }
 
-[data-theme="dark"] {
-  /* Dark theme colors */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #282c34;
-  --text-primary: #ffffff;
-  --text-secondary: #61dafb;
-  --border-color: #404040;
-  --button-bg: #0056b3;
-  --button-text: #ffffff;
-}
-
-.App {
-  text-align: center;
-  background-color: var(--bg-primary);
+body,
+.netflix-root {
+  background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Sidebar */
+.netflix-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 220px;
+  height: 100vh;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+  transition: transform 0.3s cubic-bezier(0.7,0,0.2,1);
+  transform: translateX(0);
+}
+.netflix-sidebar .sidebar-logo {
+  font-size: 2rem;
+  padding: 28px 0 10px 38px;
+  color: var(--text-primary);
+  letter-spacing: 2px;
+  font-weight: 900;
+}
+.netflix-sidebar .sidebar-logo .netflix-bold {
+  font-family: inherit; font-weight: 900;
+}
+.sidebar-nav {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 16px 40px 16px 38px;
+  font-size: 1.08rem;
+  opacity: 0.78;
+  transition: color 0.2s, opacity 0.2s, background 0.2s;
+  border-left: 3px solid transparent;
+}
+.sidebar-link.active,
+.sidebar-link:hover {
+  opacity: 1;
+  color: var(--text-secondary);
+  background: rgba(229,9,20,0.12);
+  border-left: 3px solid var(--text-secondary);
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 25px 0 25px 38px;
+}
+.sidebar-theme-btn {
+  padding: 7px 16px;
+  border-radius: 18px;
+  background: none;
+  border: 1px solid var(--text-secondary);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background .2s,color .2s;
+}
+.sidebar-theme-btn:hover {
+  background: var(--text-secondary);
+  color: #fff;
+}
+@media (max-width: 980px) {
+  .netflix-sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    z-index: 49;
+    width: 220px;
+    background: var(--bg-secondary);
+    transform: translateX(-100%);
+  }
+  .netflix-sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-overlay {
+    display: none;
+  }
+  .sidebar-overlay.open {
+    display: block;
+    z-index: 48;
+    background: rgba(10,10,10,0.44);
+    position: fixed;
+    inset: 0;
+    width: 100vw; height: 100vh;
+  }
+}
+@media (min-width: 981px) {
+  .sidebar-overlay,
+  .sidebar-overlay.open { display: none; }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* Main content - with sidebar space */
+.main-content {
+  margin-left: 220px;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  transition: margin-left 0.3s cubic-bezier(0.7,0,0.2,1);
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 980px) {
+  .main-content {
+    margin-left: 0;
   }
 }
 
-.App-header {
-  background-color: var(--bg-secondary);
-  min-height: 100vh;
+.netflix-header {
+  display: flex;
+  align-items: center;
+  height: 72px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 32px 0 18px;
+  z-index: 10;
+  position: sticky;
+  top: 0;
+}
+.menu-btn {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  margin-right: 24px;
+}
+.menu-btn span {
+  display: block;
+  height: 4px;
+  background: var(--text-secondary);
+  margin-bottom: 5px;
+  border-radius: 2px;
+  width: 26px;
+  transition: all 0.25s;
+}
+.menu-btn span:last-child { margin-bottom: 0; }
+@media (min-width: 981px) {
+  .menu-btn { display: none; }
+}
+.header-title {
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: var(--text-primary);
+  margin-left: 6px;
+}
+.header-actions {
+  margin-left: auto;
+}
+.add-emoji-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  outline: none;
+  padding: 9px 18px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 99px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px 0 rgb(229 9 20 / 11%);
+  transition: filter 0.2s;
+}
+.add-emoji-btn:hover {
+  filter: brightness(1.08);
+  background: #b0060f;
+}
+.add-emoji-plus {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+/* Emoji List Section */
+.emoji-section {
+  max-width: 750px;
+  margin: 48px auto 0 auto;
+  background: transparent;
+  position: relative;
+}
+.emoji-list-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.emoji-list-title h2 {
+  color: var(--text-primary);
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0;
+}
+.emoji-count {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  background: #25040459;
+  border-radius: 8px;
+  padding: 4px 13px;
+}
+.emoji-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 22px;
+  min-height: 168px;
+  margin-top: 12px;
+}
+.emoji-card {
+  background: var(--emoji-card-bg, #181818);
+  border: 1.5px solid var(--emoji-card-border, #333);
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease;
+  padding: 30px 0 20px 0;
   position: relative;
+  transition: border .16s, box-shadow .2s;
+  box-shadow: 0 2px 14px 0 rgba(18,0,0,0.04);
 }
-
-.App-link {
-  color: var(--text-secondary);
-  transition: color 0.3s ease;
+.emoji-card:hover,
+.emoji-card:focus-within {
+  border-color: var(--text-secondary);
+  box-shadow: 0 6px 24px 0 rgba(229,9,20,0.07);
 }
-
-.theme-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 14px;
+.emoji-symbol {
+  font-size: 2.7rem;
+  margin-bottom: 14px;
+  text-shadow: 0 2px 12px #0005;
+  background: transparent;
+}
+.emoji-name {
+  color: var(--text-primary);
+  font-size: 1.1rem;
   font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 5px;
+  background: transparent;
+}
+.emoji-delete-btn {
+  background: rgba(229,9,20,0.93);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.35rem;
+  padding: 1px 10px 1px 10px;
+  position: absolute;
+  top: 9px;
+  right: 13px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background 0.18s;
+  opacity: 0.88;
+}
+.emoji-delete-btn:hover {
+  background: #b0060f;
+  opacity: 1;
+}
+.delete-x {
+  font-size: 1.25em;
+  vertical-align: middle;
+  font-weight: 600;
+}
+.emoji-empty {
+  color: var(--text-secondary);
+  grid-column: 1 / -1;
+  font-size: 1.13rem;
+  padding: 38px 0;
+  text-align: center;
 }
 
-.theme-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  opacity: 0.9;
+/* Modal Styles */
+.netflix-modal-overlay {
+  position: fixed;
+  z-index: 60;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(20,14,14,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.theme-toggle:active {
-  transform: translateY(0);
+.netflix-modal {
+  background: var(--bg-secondary);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px 0 rgba(0,0,0,0.33);
+  padding: 38px 30px 28px 30px;
+  min-width: 320px;
+  position: relative;
+  max-width: 98vw;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 520px) {
+  .netflix-modal {
+    padding: 30px 12px 20px 12px;
+    min-width: 0;
+    width: 97vw;
   }
-  to {
-    transform: rotate(360deg);
+}
+.modal-close {
+  position: absolute;
+  top: 9px; right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.8rem;
+  cursor: pointer;
+  opacity: .85;
+}
+.modal-close:hover { color: #fff; opacity: 1; }
+.modal-form h3, .modal-dialog h3 {
+  color: var(--text-secondary);
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-top: 0;
+}
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  font-size: 1.02rem;
+  font-weight: 600;
+  gap: 5px;
+}
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+}
+.primary-btn {
+  background: var(--text-secondary);
+  color: #fff;
+  padding: 9px 19px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.primary-btn:hover { background: #b0060f; }
+.secondary-btn {
+  background: none;
+  color: var(--text-primary);
+  border: 1.2px solid var(--border-color);
+  padding: 9px 19px;
+  border-radius: 9px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  opacity: 0.86;
+}
+.secondary-btn:hover {
+  background: #2b2323;
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+}
+.danger-btn {
+  background: #c11119;
+  color: #fff;
+  border: none;
+  font-weight: 800;
+  border-radius: 9px;
+  padding: 9px 19px;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+.danger-btn:hover { background: #e50914; }
+
+.modal-footnote {
+  color: #fff7;
+  font-size: 0.95em;
+  margin-top: 10px;
+  text-align: right;
+}
+
+/* Modal Delete Dialog */
+.modal-dialog .delete-confirm {
+  color: var(--text-primary);
+  font-size: 1.13rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.emoji-symbol-big {
+  font-size: 2.3rem;
+  margin: 0 6px;
+}
+
+/* Utility */
+.text-glow {
+  text-shadow: 0 2px 25px var(--text-secondary), 0 1px 0 #111;
+}
+
+@media (max-width: 800px) {
+  .emoji-section {
+    margin-top: 12vw;
+    width: 96vw;
+    max-width: 99vw;
+  }
+  .emoji-list-title h2 {
+    font-size: 1.02rem;
+  }
+  .main-content {
+    padding-bottom: 36px;
   }
 }
 
-/* Responsive design for mobile */
-@media (max-width: 768px) {
-  .theme-toggle {
-    top: 10px;
-    right: 10px;
-    padding: 8px 16px;
-    font-size: 12px;
+/* Sidebar open for smaller screens */
+@media (max-width: 980px) {
+  .netflix-root.sidebar-open .netflix-sidebar {
+    transform: translateX(0);
+  }
+  .main-content {
+    filter: blur(1.4px);
+    pointer-events: none;
+    user-select: none;
   }
 }
